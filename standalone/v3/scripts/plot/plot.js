@@ -132,7 +132,7 @@
                     },
                     'getPrevPath': function(path){
                         var paths = this.paths,
-                        index;
+                            index;
                
                         this.sortPathsByX();
             
@@ -163,7 +163,7 @@
 
                             return false;
                         })[0];
-                        console.log(intersectedPath, point)
+
                         return { 
                             'path': intersectedPath, 
                             'point': point

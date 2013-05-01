@@ -15,6 +15,16 @@
             this.state = state;
             this.pathArray = [["M", from.x, from.y], ["L", to.x, to.y]];
             this.initialState = [["M", from.x, from.y], ["L", to.x, to.y]];
+            this.pin = {
+                x: 0,
+                y: 0
+            };
+
+            try{
+                this.k = (to.y - from.y)/(to.x - from.x);
+            } catch(e) {
+                this.k = 0;
+            }
 
             this.controls = this.state.R.set(
                 from.get().hide(), 
@@ -84,7 +94,14 @@
                 self.highlight.call(this);
                 self.intersactionPoint = null;
                 
-                if (self.isInsideBoundingBox()){
+//                if (self.isInsideBoundingBox()){
+                if (self.pathArray[0][1] >= state.BOUNDING_BOX.LEFT){
+                    
+                    self.destroy();
+                    return;
+                    
+                    
+                    
                     self.getInitialState();
                     state
                         .removeNextPaths(self)
@@ -111,15 +128,24 @@
                 }
             }
 			
-            function up() { 
+            function up(e) { 
                 var state = self.state,
                     intersaction, path, point;
+                
+                self.pin = {
+                    x: e.offsetX,
+                    y: e.offsetY
+                };
+
+                this.dx = this.dy = null;
+                this.isDragged = false; 
+                self.unHighlight.call(this);
                     
-                if (!self.isInsideBoundingBox()){
-                    self.destroy();
-                    
-                    return false;
-                }
+//                if (!self.isInsideBoundingBox()){
+//                    self.destroy();
+//                    
+//                    return false;
+//                }
 
 		if (!state.isFirst) {
                     // If element is first inside bounding box we have to 
@@ -131,52 +157,77 @@
                     intersaction = state.findIntersactions(self);
                     path = intersaction.path;
                     point = intersaction.point;
-
+                    
                     if(point){
                         // If intersection is present, join paths and iterpolate 
                         // last path (current)
                         self.intersactionPoint = point;
-                        joinPaths(path, self, point); 
-                        state.removeNextPaths(self);
-                        self.interpolate(true);
+                            
+                        if(self.pin.x <= point.x){
+                            joinPaths(self, path, point, true); 
+//                            state.removePrevPaths(self);
+                        } else {
+                            joinPaths(path, self, point); 
+//                            state.removeNextPaths(self);
+                        }
+                        
                     } else {
                         // Otherwise, we remove current Line and return from function
                         self.destroy();
+                        return;
+
+
+                        path = state.getPrevPath(self);
+                        if(path) {
+                            var res = state.getPointOfIntersectionLines(path, self, joinPaths);
+//                            new Point(res.x, res.y, state)
+                        }
+    
+    
+
                     
                         return false;
                     }
                 }
-
-                this.dx = this.dy = null;
-                this.isDragged = false; 
-                self.unHighlight.call(this);
             
             }
-			
-            function joinPaths (from, to, point){
-                var X = point.x - self.pathArray[0][1],
-                    Y = point.y - self.pathArray[0][2],
+            
+            
+            
+            
+            // Join to paths in a given point.
+            function joinPaths (from, to, point, toLeft){
+                var pTo = to.pathArray,
+                    pFr = from.pathArray,
+                    X = point.x - pTo[0][1],
+                    Y = point.y - pTo[0][2],
                     X1, Y1;
 
-                if (typeof from.pathArray[1][5] === "number"){
-                    X1 = point.x - from.pathArray[1][5];
-                    Y1 = point.y - from.pathArray[1][6];
+                if (typeof pFr[1][5] === "number"){
+                    X1 = point.x - pFr[1][5];
+                    Y1 = point.y - pFr[1][6];
                 } else{
-                    X1 = point.x - from.pathArray[1][1];
-                    Y1 = point.y - from.pathArray[1][2];
+                    X1 = point.x - pFr[1][1];
+                    Y1 = point.y - pFr[1][2];
                 }    
 
                 from.controls[1].update(X1, Y1);
               
                 if (from.updateCoefs){
                     from.updateCoefs(point, {
-                        'x': from.pathArray[0][1],
-                        'y': from.pathArray[0][2]
+                        'x': pFr[0][1],
+                        'y': pFr[0][2]
                     });
                 }
-
+                
                 to.controls[0].update(X, Y);
-                to.interpolate(true);
+                
+                if(toLeft){
+                    from.interpolateLeft(true);
+                } else {
+                    to.interpolate(true);
+                }
+                
             }
         };
                 
@@ -191,13 +242,15 @@
                 return this.path;
             },
             'getInitialState': function(){
-                var X = this.pathArray[0][1] - this.initialState[0][1],
-                    Y = this.pathArray[0][2] - this.initialState[0][2];
+                var p = this.pathArray,
+                    i = this.initialState,
+                    X = p[0][1] - i[0][1],
+                    Y = p[0][2] - i[0][2];
                 
-                this.pathArray[0][1] = this.initialState[0][1];
-                this.pathArray[0][2] = this.initialState[0][2];
-                this.pathArray[1][1] = this.initialState[1][1];
-                this.pathArray[1][2] = this.initialState[1][2];
+                p[0][1] = i[0][1];
+                p[0][2] = i[0][2];
+                p[1][1] = i[1][1];
+                p[1][2] = i[1][2];
 
                 $.each(this.controls, function( index, element ){
                     element.data("Class").getInitialState(); 
@@ -261,14 +314,37 @@
             'interpolate': function(flag){             
                 var state = this.state,
                     BB = state.BOUNDING_BOX,
-                    delta = {};
+                    delta = {},
+                    intersection;
                 
                 this.getInitialState();
-                delta.x0 = flag ? 0 : BB.LEFT - this.pathArray[0][1] + 5;
-                delta.x1 = BB.MAX_X_VALUE - this.pathArray[1][1];
+                
+                intersection = this.formula(BB.RIGHT, BB.BOTTOM);
+                
+                delta.x0 = flag ? 0 : BB.LEFT - this.pathArray[0][1];
+                
+                delta.x1 = ((this.k !== 0) ? intersection.x : BB.RIGHT)- this.pathArray[1][1];
+                delta.y1 = intersection.y - this.pathArray[0][2] || 0;
                 
                 this.controls[0].update(delta.x0, 0);
-                this.controls[1].update(delta.x1, 0);
+                this.controls[1].update(delta.x1, delta.y1);
+            },
+            'interpolateLeft': function(flag){             
+                var state = this.state,
+                    BB = state.BOUNDING_BOX,
+                    delta = {},
+                    intersection;
+                
+                intersection = this.formula(BB.LEFT);
+                
+                delta.x0 = ((this.k !== 0) ? intersection.x : BB.LEFT) - this.pathArray[0][1];
+                delta.y0 = (intersection.y - this.pathArray[0][2]);
+                
+                delta.x1 = 0; 
+                delta.y1 = 0; 
+                
+                this.controls[0].update(delta.x0, delta.y0);
+                this.controls[1].update(delta.x1, delta.y1);
             },
             'cloneSegment': function(){
                 var state = this.state,
@@ -277,6 +353,24 @@
                     to = new Point(path[1][1], path[1][2], state);               
 
                     new Line(from, to, state);
+            },
+            'formula': function(x){
+                var p = this.pathArray,
+                    x1 = p[0][1],
+                    y1 = p[0][2],
+                    x2 = p[1][1],
+                    y2 = p[1][2],
+                    A = y1 - y2,
+                    B = x2 - x1,
+                    C = x1*y2 - x2*y1,
+                    Y = -(A/B)*x - C/B,
+                    X = -(B/A)*Y - C/A;
+
+                    return {
+                       'x': X,
+                       'y': Y
+                    }
+                    
             }
         };
 

@@ -32,33 +32,53 @@
                 var lineFrom = new Point(20, 20, state),
                     lineTo = new Point(100, 20, state),
                     
-                    curveUpTLTRFrom = new Point(20, 50, state),
-                    curveUpTLTRTo = new Point(100, 130, state),
-                    curveUpTLTRCFrom = new Point(20, 100, state),
-                    curveUpTLTRCTo = new Point(40, 130, state),
+                    lineFrom45 = new Point(20, 70, state),
+                    lineTo45 = new Point(100, 120, state),
                     
-                    curveDownTLBRFrom = new Point(20, 150, state),
-                    curveDownTLBRTo = new Point(100, 230, state),
-                    curveDownTLBRCFrom = new Point(70, 150, state),
-                    curveDownTLBRCTo = new Point(100, 170, state);    
+                    lineFrom315 = new Point(20, 170, state),
+                    lineTo315 = new Point(100, 120, state);
                     
-                    curveUpBLTRFrom = new Point(20, 330, state),
-                    curveUpBLTRTo = new Point(100, 250, state),
-                    curveUpBLTRCFrom = new Point(70, 330, state),
-                    curveUpBLTRCTo = new Point(100, 310, state);    
-                    
-                    curveDownBLTRFrom = new Point(20, 430, state),
-                    curveDownBLTRTo = new Point(100, 350, state),
-                    curveDownBLTRCFrom = new Point(20, 400, state),
-                    curveDownBLTRCTo = new Point(40, 350, state);    
-                              
+//                    curveUpTLTRFrom = new Point(20, 50, state),
+//                    curveUpTLTRTo = new Point(100, 130, state),
+//                    curveUpTLTRCFrom = new Point(20, 100, state),
+//                    curveUpTLTRCTo = new Point(40, 130, state),
+//                    
+//                    curveDownTLBRFrom = new Point(20, 150, state),
+//                    curveDownTLBRTo = new Point(100, 230, state),
+//                    curveDownTLBRCFrom = new Point(70, 150, state),
+//                    curveDownTLBRCTo = new Point(100, 170, state);    
+//                    
+//                    curveUpBLTRFrom = new Point(20, 330, state),
+//                    curveUpBLTRTo = new Point(100, 250, state),
+//                    curveUpBLTRCFrom = new Point(70, 330, state),
+//                    curveUpBLTRCTo = new Point(100, 310, state);    
+//                    
+//                    curveDownBLTRFrom = new Point(20, 430, state),
+//                    curveDownBLTRTo = new Point(100, 350, state),
+//                    curveDownBLTRCFrom = new Point(20, 400, state),
+//                    curveDownBLTRCTo = new Point(40, 350, state);    
+                      
+                // Drawing white rect behind our Paths
+                state.R.rect(0, 0, BB.LEFT, BB.BOTTOM).attr({
+                    "fill": "#fff",
+                    "stroke-width": 0
+                });                        
+                      
                 new Line(lineFrom, lineTo, state);
-                new Curve(curveUpTLTRFrom, curveUpTLTRTo, curveUpTLTRCFrom, curveUpTLTRCTo, state);   
-                new Curve(curveDownTLBRFrom, curveDownTLBRTo, curveDownTLBRCFrom, curveDownTLBRCTo, state);
-                new Curve(curveUpBLTRFrom, curveUpBLTRTo, curveUpBLTRCFrom, curveUpBLTRCTo, state);   
-                new Curve(curveDownBLTRFrom, curveDownBLTRTo, curveDownBLTRCFrom, curveDownBLTRCTo, state);   
+                new Line(lineFrom45, lineTo45, state);
+                new Line(lineFrom315, lineTo315, state);
                 
-                state.R.path(axisArray);         
+//                new Curve(curveUpTLTRFrom, curveUpTLTRTo, curveUpTLTRCFrom, curveUpTLTRCTo, state);   
+//                new Curve(curveDownTLBRFrom, curveDownTLBRTo, curveDownTLBRCFrom, curveDownTLBRCTo, state);
+//                new Curve(curveUpBLTRFrom, curveUpBLTRTo, curveUpBLTRCFrom, curveUpBLTRCTo, state);   
+//                new Curve(curveDownBLTRFrom, curveDownBLTRTo, curveDownBLTRCFrom, curveDownBLTRCTo, state);   
+
+
+//                    state.clearStorages();
+
+
+                state.R.path(axisArray);     
+                
                 state.R.rect(BB.LEFT, BB.TOP, BB.RIGHT - BB.LEFT, BB.BOTTOM - BB.TOP).attr({
                     "stroke-width" : .7,
                     "opacity" : .7
