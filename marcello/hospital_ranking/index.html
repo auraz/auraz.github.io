@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Plot Tool Mockups</title>
+        <script src="scripts/jquery.min.js"></script>
+        <script src="scripts/jquery-ui.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.8.22.custom.css" />
+        <style type="text/css">
+            .page{
+                width: 800px;
+                margin: 0 auto;
+            }
+            section{
+                margin-bottom: 50px;
+                padding-bottom: 50px;
+                border-bottom: 1px solid #eee;
+            }
+            #histogram{
+                width: 800px;
+                height: 500px;
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="page">
+            <h1>Hospital Rankings</h1>
+            <h2>Proposed version</h2>
+            <h3>Population by Age</h3>
+            <center>
+                <table width="600" id="applet">
+                    <tr>
+                      <td>Old:</td><td><span id="old"></span></td>
+                    </tr>
+                </table>
+            </center>
+            <h3>Average Mortality Rate Calculation</h3>
+            <center>
+                <div id="plot_info"></div>
+                <div style="height:50px"></div>
+            </center>
+
+        </div>
+        <script src="scripts/Hospital_B_proposed.js"></script>
+    </body>
+</html>
