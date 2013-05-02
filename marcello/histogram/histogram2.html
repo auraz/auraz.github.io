@@ -1,0 +1,214 @@
+<!doctype html>
+<html>
+    <head>
+        <script src="scripts/jquery-1.7.2.min.js"></script>
+        <script src="scripts/jquery.flot.js"></script>
+        <script src="scripts/jquery-ui.min.js"></script>
+        <script src="scripts/mainfunctions.js"></script>
+        <script src="scripts/underscore-min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.8.22.custom.css">
+        <style type="text/css">
+            .page{
+                width: 800px;
+                margin: 0 auto;
+            }
+            section{
+                margin-bottom: 50px;
+                padding-bottom: 50px;
+                border-bottom: 1px solid #eee;
+            }
+            #histogram{
+                width: 635px;
+                height: 435px;
+                margin: 0;
+            }
+
+            #slider {
+                width: 400px;
+                float: left;
+            }
+
+            #slider_value{
+                witdh: 100px;
+                float:left;
+                margin-left: 30px;
+            }
+
+            .plot {
+                 margin-bottom:50px;
+            }
+
+            #container{
+                margin-top:30px;
+                margin-bottom: 80px;
+                margin-left: 60px;
+
+            }
+        </style>
+    </head>
+    <body>
+      <div class="page">
+        <h1>Histogram Applet</h1>
+          <section>
+            <h2>Dataset w/o duplicate values for x. Y label is frequency.</h2>
+              <figure class="plot">
+                <div id="histogram"></div>
+                <div id="container">
+                  <span style="width:80px;float:left;">Bar width:</span>
+                  <div id="slider"></div>
+                  <div id="slider_value"></div>
+                </div>
+                <figcaption style="clear:left;">
+                  <i>Fig. 1</i> Dataset w/o duplicate values for x.
+                  On the top left position of slider, you will see straight horizontal line.
+                </figcaption>
+              </figure>
+
+            <p class="expand"><a href="#">Dataset</a></h3>
+                <pre id="data" class="content_to_expand" style="display:none;">
+                3.600000 79.000000
+                1.800000 54.000000
+                3.333000 74.000000
+                2.283000 62.000000
+                4.533000 85.000000
+                2.883000 55.000000
+                4.700000 88.000000
+                1.950000 51.000000
+                4.350000 85.000000
+                1.833000 54.000000
+                3.917000 84.000000
+                4.200000 78.000000
+                1.750000 47.000000
+                2.167000 52.000000
+                4.800000 84.000000
+                1.600000 52.000000
+                4.250000 79.000000
+                3.450000 78.000000
+                3.067000 69.000000
+                1.967000 55.000000
+                4.083000 76.000000
+                3.850000 78.000000
+                4.433000 79.000000
+                4.300000 73.000000
+                4.467000 77.000000
+                3.367000 66.000000
+                4.033000 80.000000
+                3.833000 74.000000
+                2.017000 52.000000
+                1.867000 48.000000
+                4.833000 80.000000
+                4.783000 90.000000
+                1.883000 58.000000
+                4.567000 84.000000
+                3.317000 83.000000
+                2.100000 53.000000
+                4.633000 82.000000
+                2.000000 59.000000
+                4.716000 90.000000
+                1.733000 54.000000
+                4.883000 83.000000
+                3.717000 71.000000
+                1.667000 64.000000
+                4.317000 81.000000
+                2.233000 59.000000
+                4.500000 84.000000
+                1.817000 60.000000
+                4.400000 92.000000
+                4.167000 78.000000
+                2.067000 65.000000
+                4.000000 71.000000
+                1.983000 62.000000
+                5.067000 76.000000
+                3.883000 76.000000
+                4.133000 75.000000
+                4.333000 82.000000
+                4.100000 70.000000
+                2.633000 65.000000
+                4.067000 73.000000
+                4.933000 88.000000
+                3.950000 76.000000
+                4.517000 80.000000
+                2.200000 60.000000
+                4.817000 78.000000
+                4.667000 84.000000
+                3.750000 75.000000
+                4.900000 82.000000
+                2.483000 62.000000
+                4.367000 88.000000
+                4.050000 81.000000
+                1.783000 52.000000
+                4.850000 86.000000
+                3.683000 81.000000
+                4.733000 75.000000
+                2.300000 59.000000
+                4.417000 79.000000
+                1.700000 59.000000
+                2.317000 50.000000
+                4.600000 85.000000
+                2.617000 53.000000
+                3.767000 81.000000
+                1.917000 45.000000
+                2.267000 55.000000
+                4.650000 90.000000
+                2.800000 56.000000
+                4.383000 82.000000
+                2.033000 53.000000
+                3.733000 79.000000
+                4.233000 81.000000
+                5.100000 96.000000
+                5.033000 77.000000
+                2.400000 65.000000
+                3.567000 71.000000
+                3.967000 89.000000
+                4.150000 86.000000
+                3.500000 66.000000
+                4.583000 76.000000
+                2.367000 63.000000
+                5.000000 88.000000
+                1.933000 52.000000
+                4.617000 93.000000
+                2.083000 57.000000
+                2.417000 50.000000
+                2.183000 55.000000
+                3.966000 77.000000
+                4.366000 77.000000
+                2.250000 51.000000
+                2.383000 71.000000
+                3.417000 64.000000
+                4.267000 82.000000
+                4.483000 75.000000
+                4.117000 79.000000
+                4.550000 79.000000
+                4.183000 86.000000
+                2.217000 50.000000
+                4.450000 90.000000
+                1.850000 54.000000
+                4.283000 77.000000
+                2.333000 64.000000
+                2.350000 47.000000
+                2.900000 63.000000
+                2.133000 67.000000
+                3.817000 80.000000
+                4.767000 78.000000
+                4.750000 75.000000
+                2.150000 46.000000
+                </pre>
+            </section>
+        </div>
+        <script>
+        $('.expand').click(function(){
+            $('.content_to_expand').slideToggle('fast');
+        });
+        </script>
+                <div style="margin-left: 60px;"><h3><ul>
+             <li>All values (like Xmin, Xmax) are calculated automatically from dataset.</li>
+            <li>Xticks are calculated automatically from Xmin and Xmax</li>
+            <li>Minimum value of bar width is smallest difference between x coordinates.</li>
+            <li>Maximum value of bar width is Xmax - Xmin</li>
+            <li>Slider has 1000 positions</li>
+            <li>Slider's positions are equally distributed in log10 space, so small widths are equally presented together with big widths</li>
+            <li>Initial slider value is set by square-root choice</li>
+            <li>Most parameters can be set manually in course xml</li>
+        </ul></h3></div>
+    </body>
+</html>
